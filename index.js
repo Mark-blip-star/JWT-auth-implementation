@@ -2,6 +2,7 @@ const express = require(`express`)
 const mongoose = require(`mongoose`)
 const app = express()
 const dotenv = require(`dotenv`)
+const cors = require(`cors`)
 const cookieParser = require(`cookie-parser`)
 dotenv.config()
 //==========================================
@@ -11,6 +12,10 @@ const infoRoutes = require(`./routes/infoRoutes.js`)
 app.use(express.urlencoded({extended:true}))
 app.use(express.json())
 app.use(cookieParser())
+app.use(cors({
+	origin:`*`,
+	methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+}))
 app.use(AuthRouter)
 app.use(infoRoutes)
 const PORT = process.env.PORT || 5000
