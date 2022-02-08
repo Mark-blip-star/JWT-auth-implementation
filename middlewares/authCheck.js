@@ -5,9 +5,12 @@ module.exports = async function(req,res,next){
 		const authHeader = req.headers.authorization
 		const refreshToken = req.cookies.Refresh
 		if(!refreshToken){
+			res.json({"error":"unauthorized"})
 			throw new Error('unauthorized')
+			
 		}
 		if(!authHeader){
+			res.json({"error":"unauthorized"})
 			throw new Error('unauthorized')
 		}
 		const accesToken = authHeader.split(` `)[1]
