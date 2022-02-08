@@ -47,6 +47,22 @@ class AuthService{
 		}
 		await tokenService.removeAll()
 	}		
+
+	async refresh(refresh){
+		if(!refresh){
+			throw new Error('unauthorized')
+		}
+		const userData = await tokenService.validateRefreshToken(refresh)
+		const fromDb = await tokenModel.findOne({refresh})
+		if(!userData || fromDb){
+			throw new Error('unauthorized')
+		}
+		const tokens = await tokenService.generateTokens(login)
+		await tokenService.saveToken(user._id,tokens.refreshToken)
+		return {
+			tokens
+		}
+	}
 }
 
 module.exports = new AuthService()
