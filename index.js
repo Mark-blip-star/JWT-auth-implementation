@@ -5,14 +5,14 @@ const dotenv = require(`dotenv`)
 const cookieParser = require(`cookie-parser`)
 dotenv.config()
 //==========================================
-const AuthRouter = require(`./controllers/auth.js`)
-
+const AuthRouter = require(`./routes/authRoutes.js`)
+const infoRoutes = require(`./routes/infoRoutes.js`)
 
 app.use(express.urlencoded({extended:true}))
 app.use(express.json())
 app.use(cookieParser())
 app.use(AuthRouter)
-
+app.use(infoRoutes)
 const PORT = process.env.PORT || 5000
 
 function start(){

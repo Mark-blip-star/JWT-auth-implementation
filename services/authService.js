@@ -2,7 +2,7 @@ const bcrypt = require(`bcrypt`)
 const jwt = require('jsonwebtoken')
 const authModel = require(`../models/authModel.js`)
 
-const tokenService = require(`../services/tokenService`)
+const tokenService = require(`./tokenService`)
 const validator = require(`express-validator`)
 
 class AuthService{
@@ -23,6 +23,30 @@ class AuthService{
 			tokens
 		}
 	}
+
+	async login(id,password){
+		const candidate = await authModel.findOne({login:id})
+		if(!candidate){
+			throw new Error('User not found')
+		}
+		const comparePassword = await bcrypt.compare(password,candidate.password)
+		if(!comparePassword){
+			throw new Error('wrong password')
+		}
+		const tokens = await tokenService.generateTokens({id})
+		await tokenService.saveToken(candidate._id,tokens.refreshToken)
+		return {
+			tokens
+		}
+	}
+
+	async logout(refreshToken,logoutParam){
+		if(logoutParam === false){
+			const token = await tokenService.removeToken({refreshToken})
+			return token;
+		}
+		await tokenService.removeAll()
+	}		
 }
 
 module.exports = new AuthService()
